@@ -20,7 +20,12 @@ F-->G: Dashed line
 G->>D: Open arrow
 D-->>A: Dashed open arrow
     	</textarea>
-    	<button id="parse" type="button">Click Me!</button>  
+    	<button id="parse" type="button">Click Me!</button> 
+    	<select id="theme">
+    	    <option>svgjs</option>
+    	    <option>simple</option>
+    	    <option>hand</option>
+    	</select> 
 
     	<div id="diagram"></div>
 
@@ -48,8 +53,9 @@ D-->>A: Dashed open arrow
                     //try {
                         var diagram = Diagram.parse($('#language').val());
                         console.log(diagram);
-
-                        diagram.drawSVG('diagram', {theme: 'svgjs'});
+                        
+                        var selectedTheme = $('#theme').find(":selected").text();
+                        diagram.drawSVG('diagram', {theme: selectedTheme});
                     //} catch (e) {
                     //    console.log(e);
                     //}

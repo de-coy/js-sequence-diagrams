@@ -636,6 +636,10 @@
 	});
 	
 	
+
+/******************
+ * SVGJSTheme
+ ******************/
 	
 	
 	var SVGJSTheme = function(diagram) {
@@ -654,10 +658,10 @@
         
         init_font : function() {
             this._font = {
-                family:   'Helvetica',
-                size:     44,
+                family:   'Andale Mono',
+                size:     24,
                 anchor:   'middle',
-                leading:  0.5
+                leading:  0.6
             }
         },
         
