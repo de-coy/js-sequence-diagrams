@@ -10,10 +10,15 @@
     </head>
  
     	<textarea id="language" rows="10" cols="50">
-#Note left of A: Note to the\n left of A
-#Note right of A: Note to the\n right of A
-#Note over A: Note over A
-Note over A,B: Note over A,B
+Title: Here is a title
+A->B: Normal line
+B-->C: Dashed line
+C->>D: Open arrow
+D-->>A: Dashed open arrow
+E->F: Normal line
+F-->G: Dashed line
+G->>D: Open arrow
+D-->>A: Dashed open arrow
     	</textarea>
     	<button id="parse" type="button">Click Me!</button>  
 
@@ -24,17 +29,18 @@ Note over A,B: Note over A,B
         <!--script src="underscore-min.js"></script-->
         <script src="lodash.min.js"></script>
 		<script src="raphael-min.js"></script>
+		<script src="svg.js"></script>
         <!--script src="https://raw.github.com/DmitryBaranovskiy/raphael/master/raphael-min.js"></script-->
 
-        <!--
+        
         <script src="../build/grammar.js"></script>
         <script src="../src/diagram.js"></script>
         <script src="../src/jquery-plugin.js"></script>
         <script src="../fonts/daniel/daniel_700.font.js"></script>
         <script src="../src/sequence-diagram.js"></script>
-        -->
+       
 
-        <script src="../build/sequence-diagram-min.js"></script>
+        <!--<script src="../build/sequence-diagram-min.js"></script>-->
         <script>
             $(document).ready(function(){
                 $('#parse').click(_.throttle( function() {
@@ -43,7 +49,7 @@ Note over A,B: Note over A,B
                         var diagram = Diagram.parse($('#language').val());
                         console.log(diagram);
 
-                        diagram.drawSVG('diagram', {theme: 'hand'});
+                        diagram.drawSVG('diagram', {theme: 'svgjs'});
                     //} catch (e) {
                     //    console.log(e);
                     //}

@@ -10,7 +10,7 @@ lint:
 	jshint test/grammar-tests.js
 
 build/grammar.js: src/grammar.jison
-	~/vendor/jison/jison/node_modules/.bin/jison $< -o $@
+	jison $< -o $@
 
 build/diagram-grammar.js: src/diagram.js build/grammar.js
 	#

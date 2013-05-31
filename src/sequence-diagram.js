@@ -251,7 +251,7 @@
 			// Setup some layout stuff
 			if (diagram.title) {
 				var title = this._title = {};
-				var bb = paper.text_bbox(diagram.title, font);
+				var bb = this.text_bbox(diagram.title, font);
 				title.text_bb = bb;
 				title.message = diagram.title;
 
@@ -265,7 +265,7 @@
 			}
 
 			_.each(actors, function(a) {
-				var bb = paper.text_bbox(a.name, font);
+				var bb = this.text_bbox(a.name, font);
 				a.text_bb = bb;
 
 				//var bb = t.attr("text", a.name).getBBox();
@@ -298,7 +298,7 @@
 			_.each(signals, function(s) {
 				var a, b; // Indexes of the left and right actors involved
 
-				var bb = paper.text_bbox(s.message, font);
+				var bb = this.text_bbox(s.message, font);
 
 				//var bb = t.attr("text", s.message).getBBox();
 				s.text_bb = bb;
@@ -558,7 +558,22 @@
 			y = getCenterY(box);
 
 			this.draw_text(x, y, text, font);
-		}
+		},
+		
+		text_bbox : function (text, font) {
+            var p;
+            if (font._obj) {
+                p = this._paper.print_center(0, 0, text, font._obj, font['font-size']);
+            } else {
+                p = this._paper.text(0, 0, text);
+                p.attr(font);
+            }
+    
+            var bb = p.getBBox();
+            p.remove();
+    
+            return bb;
+        }
 
 		/**
 		 * Draws a arrow head
@@ -619,10 +634,90 @@
 			return this._paper.handRect(x, y, w, h);
 		}
 	});
+	
+	
+	
+	
+	var SVGJSTheme = function(diagram) {
+        this.init(diagram);
+    };
+
+    _.extend(SVGJSTheme.prototype, BaseTheme.prototype, {
+        
+        init_paper : function(container) {
+            if (SVG.supported) {
+                this._paper = new SVG(container).size(600, 400);
+            } else {
+                alert("Your browser does not support SVG.");
+            }
+        },
+        
+        init_font : function() {
+            this._font = {
+                family:   'Helvetica',
+                size:     44,
+                anchor:   'middle',
+                leading:  0.5
+            }
+        },
+        
+        set_paper_size : function (w,h) {
+            this._paper.viewbox(0,0,w,h);
+        },
+
+        draw_line : function(x1, y1, x2, y2) {
+            return this._paper.line(x1, y1, x2, y2);
+        },
+
+        draw_rect : function(x, y, w, h) {
+            return this._paper.rect(w, h).move(x, y).fill('#fff');
+        },
+        
+        draw_text : function (x, y, text, font) {
+            var f = font || {};
+            return this._paper.text(text).move(x, y).font(f);
+        },
+        
+        bounding_box : function (shape){
+           return shape.bbox(); 
+        },
+        
+        text_bbox : function (text, font) {
+            var p = this.draw_text(0,0,text,font);
+            var bb = this.bounding_box(p);
+            p.remove();
+            return bb;
+        },
+        
+        
+        draw : function (container) {
+            var diagram = this.diagram;
+            this.init_paper(container);
+            this.init_font();
+
+            this.layout();
+
+            var title_height = this._title ? this._title.height : 0;
+
+            this.set_paper_size(diagram.width, diagram.height);
+
+            var y = DIAGRAM_MARGIN + title_height;
+
+            this.draw_title();
+            this.draw_actors(y);
+            this.draw_signals(y + this._actors_height);
+        }
+
+        
+    });
+	
+
+
 
 	var themes = {
 		simple : RaphaëlTheme,
-		hand  : HandRaphaëlTheme
+		hand   : HandRaphaëlTheme,
+		svgjs  : SVGJSTheme
 	};
 
 	Diagram.prototype.drawSVG = function (container, options) {
@@ -634,7 +729,7 @@
 
 		if (!(options.theme in themes))
 			throw new Error("Unsupported theme: " + options.theme);
-
+        console.log(this);
 		var drawing = new themes[options.theme](this);
 		drawing.draw(container);
 
