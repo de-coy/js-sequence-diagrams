@@ -662,7 +662,7 @@
                 size:     24,
                 anchor:   'middle',
                 leading:  0.6
-            }
+            };
         },
         
         set_paper_size : function (w,h) {
